@@ -44,6 +44,12 @@ Receives a list of version names, a changelog object and tip if the first versio
 
 ### Utils
 
+```python
+scm_exec(prog, args)
+```
+
+Executes a raw command.
+
 #### git
 
 ```python
@@ -55,17 +61,22 @@ Simple git log command.
 ```python
 git_log_between_versions(a, b)
 ```
+
 Given 2 version, return log between `a` and `b`. If `a` is `tip` use `HEAD`.
-
-```python
-git_exec(args)
-```
-
-Executes a raw git command.
 
 #### hg
 
-Needs implementation.
+```python
+hg_log(args)
+```
+
+Simple hg log command.
+
+```python
+hg_log_between_versions(a, b)
+```
+
+Given 2 version, return log between `a` and `b`. If `a` is `tip` use `tip`.
 
 ## Example
 

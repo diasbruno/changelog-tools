@@ -1,8 +1,8 @@
 import sys
 from datetime import datetime
 
-from changelogtools import (Changelog, SemVer, changelog)
-from changelogtools.git import (git_exec, git_log, git_logs_between_versions)
+from changelogtools import (Changelog, SemVer, changelog, scm_exec)
+from changelogtools.git import (git_log, git_logs_between_versions)
 
 
 def github_url(h):
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         versions = [args[1]]
         tip = True
     else:
-        tags = git_exec(["tag", "-l"])
+        tags = scm_exec(["tag", "-l"])
         if tags != '':
             versions = list(filter(lambda line: line != '', tags.split("\n")))
         else:

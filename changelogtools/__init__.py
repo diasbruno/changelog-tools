@@ -1,3 +1,5 @@
+from subprocess import Popen, PIPE
+
 __version__ = '0.1.0'
 
 
@@ -101,6 +103,12 @@ class Changelog(object):
     def formatter(self, info):
         a, b, entries = info
         return self._formatter(a, b, entries)
+
+
+def scm_exec(prog, args):  # pragma: no coverage
+    p = Popen(" ".join([prog] + args), shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate()
+    return out.decode('utf-8')
 
 
 def adjacents(ls, f, res):
