@@ -1,3 +1,9 @@
+0.3.0 - Thu, 22 Jun 2017 13:47:45 UTC
+-------------------------------------
+
+- [f5ad3cd](../../commit/f5ad3cd) display only the first log when logging between versions.
+
+
 0.2.0 - Thu, 22 Jun 2017 09:46:18 UTC
 -------------------------------------
 
