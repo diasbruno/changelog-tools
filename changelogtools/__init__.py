@@ -1,6 +1,17 @@
+import argparse
 from subprocess import Popen, PIPE
 
 __version__ = '0.1.0'
+
+
+# Commom cli interface that you can extend later.
+default_cli = argparse.ArgumentParser(description='Changelog cli.')
+default_cli.add_argument('versions', metavar='N', type=str, nargs='*',
+                         help='Version or list of versions.')
+default_cli.add_argument('-t', action='store_true', dest='tip', default=False,
+                         help='Make the current changelog between two versions (but the first is tip).')
+default_cli.add_argument('-b', action='store_true', dest='between', default=False,
+                         help='Make the current changelog between two versions.')
 
 
 class MissingChangelogClassError(BaseException):
@@ -133,7 +144,7 @@ def check_versions(versions=[]):
     return True
 
 
-def changelog(versions=[], changelog=None, tip=False):
+def changelog(versions=[], changelog=None, tip=False, between=False):
     """ Generate the changelog with this configurations. """
     if changelog is None:
         raise MissingChangelogClassError()
@@ -149,7 +160,15 @@ def changelog(versions=[], changelog=None, tip=False):
         versions[0].tip = True
 
     versions = sorted(versions, key=CompareVersions, reverse=True)
-    versions = adjacents(versions, changelog.delta, [])
+
+    if between:
+        tail = None
+        if len(versions) > 1:
+            tail = versions[1]
+        versions = [changelog.delta(versions[0], tail)]
+    else:
+        versions = adjacents(versions, changelog.delta, [])
+
     changelogs = map(changelog.formatter, versions)
 
     return "\n".join(changelogs)

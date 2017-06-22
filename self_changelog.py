@@ -1,7 +1,7 @@
 import sys
 from datetime import datetime
 
-from changelogtools import (Changelog, SemVer, changelog, scm_exec)
+from changelogtools import (Changelog, SemVer, changelog, default_cli, scm_exec)
 from changelogtools.git import (git_log, git_logs_between_versions)
 
 
@@ -50,21 +50,25 @@ GithubWithLinksMarkdown = Changelog(version=SemVer,
                                     delta=git_logs_between_versions,
                                     formatter=md_changelog_entry)
 
+def git_tags():
+    return scm_exec('git', ["tag", "-l"])
+
 if __name__ == "__main__":
-    args = sys.argv[1:]
     tip = False
 
-    if len(args) > 0:
-        versions = [args[1]]
-        tip = True
+    args = default_cli.parse_args()
+
+    if args.tip or args.between:
+        versions = args.versions
     else:
-        tags = scm_exec(["tag", "-l"])
-        if tags != '':
-            versions = list(filter(lambda line: line != '', tags.split("\n")))
-        else:
+        tags = git_tags()
+        versions = list(filter(lambda line: line != '', tags.split("\n")))
+
+        if len(tags) == 0:
             print("No changelog")
             sys.exit(0)
 
     print(changelog(versions=versions,
                     changelog=GithubWithLinksMarkdown,
-                    tip=tip))
+                    tip=args.tip,
+                    between=args.between))
